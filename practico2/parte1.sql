@@ -1,11 +1,11 @@
 -- sudo mysql -u root -h localhost
 
 -- 1
-
+/*
 DROP DATABASE IF EXISTS `world`;
 
 CREATE DATABASE `world`;
-
+*/
 USE `world`;
 
 
@@ -42,15 +42,15 @@ CREATE TABLE city (
 CREATE TABLE countrylanguage (
     CountryCode char(3),
     Language varchar(128),
-    IsOfficial boolean,
-    Percentage numeric(3,1),
+    IsOfficial char(1),
+    Percentage numeric(10,2),
     PRIMARY KEY (CountryCode, Language),
     FOREIGN KEY (CountryCode) REFERENCES country(Code)
 );
 
 -- 3
--- cambiar archivo
-SOURCE /home/ignacio/bases-de-datos/practico2/deirabeis.sql;
+
+-- SOURCE /home/ignacio/bases-de-datos/practico2/world-data.sql
 
 
 -- 4

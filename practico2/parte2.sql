@@ -52,7 +52,7 @@ WHERE HeadOfState LIKE '%John%';
 
 SELECT Name, Population 
 FROM country 
-WHERE Population >= 35000000 AND Population <= 45000000;
+WHERE Population BETWEEN 35000000 AND  45000000;
 
 -- 11
 

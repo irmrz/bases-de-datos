@@ -59,6 +59,7 @@ LIMIT 10;
 SELECT Name AS Pais
 FROM country
 ORDER BY Population DESC
+WHERE Population > 100
 LIMIT 10
 )
 UNION
@@ -66,6 +67,7 @@ UNION
 SELECT Name AS Pais
 FROM country
 ORDER BY Population
+WHERE Population > 100
 LIMIT 10);
 
 -- 7
@@ -75,7 +77,7 @@ FROM country
 INNER JOIN countrylanguage
 ON country.Code = countrylanguage.CountryCode
 WHERE countrylanguage.Language = 'English'
-    AND country.Population > 100
+    AND countrylanguage.IsOfficial = 'T'
 
 INTERSECT
 
@@ -84,7 +86,7 @@ FROM country
 INNER JOIN countrylanguage
 ON country.Code = countrylanguage.CountryCode
 WHERE countrylanguage.Language = 'French'
-    AND country.Population > 100;
+    AND countrylanguage.IsOfficial = 'T';
 
 -- 8
 

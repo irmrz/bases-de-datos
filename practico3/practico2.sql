@@ -3,9 +3,9 @@
 -- 1
 /*
 DROP DATABASE IF EXISTS `world`;
-*/
 
 CREATE DATABASE `world`;
+*/
 
 USE `world`;
 
@@ -127,7 +127,8 @@ WHERE District = 'Córdoba' AND CountryCode != 'ARG';
 
 SELECT Name, HeadOfState 
 FROM country 
-WHERE HeadOfState LIKE '%John%';
+WHERE HeadOfState LIKE '%John %'; -- Correccion
+-- Agregado espacio para no borrar a Johnson
 
 -- 10
 

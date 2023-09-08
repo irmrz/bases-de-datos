@@ -1,6 +1,8 @@
 -- SOURCE world-schema.sql
 -- SOURCE world-data.sql
 
+-- Parte 1
+
 USE `world`;
 
 -- 1
@@ -103,3 +105,40 @@ FROM country
 INNER JOIN countrylanguage
 ON country.Code = countrylanguage.CountryCode
 WHERE countrylanguage.Language = 'Spanish';
+
+/*
+-- Parte 2
+
+Preguntas
+
+1)
+
+SELECT city.Name, country.Name
+FROM city
+INNER JOIN country ON city.CountryCode = country.Code AND country.Name = 'Argentina';
+
+SELECT city.Name, country.Name
+FROM city
+INNER JOIN country ON city.CountryCode = country.Code
+WHERE country.Name = 'Argentina';
+
+Ambas consultas devuelven lo mismo porque semanticamente hacen lo mismo. La unica diferencia
+es que la primera aplica el filtro en el JOIN mientras que la segunda lo hace en el WHERE.
+Dado que INNER JOIN funciona como una interseccion entre dos conjuntos, ambas querys buscan 
+los resultados en el mismo lugar.
+
+2)
+SELECT city.Name, country.Name
+FROM city
+LEFT JOIN country ON city.CountryCode = country.Code AND country.Name = 'Argentina';
+
+SELECT city.Name, country.Name
+FROM city
+LEFT JOIN country ON city.CountryCode = country.Code
+WHERE country.Name = 'Argentina';
+
+Al usar LEFT JOIN, en la primera consulta, se devuelven todos los resultados de la tabla city
+incluyendo aquellos cuyo country.Name es NULL. En la segunda consulta, se devuelven solo los
+resultados de la tabla city que satisfacen la condicion descripta en el WHERE, es decir 
+aquellas ciudades que tienen country.name = Argentina.
+*/

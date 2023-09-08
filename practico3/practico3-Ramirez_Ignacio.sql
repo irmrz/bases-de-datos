@@ -57,20 +57,21 @@ ORDER BY city.Population DESC,
 LIMIT 10;
 
 -- 6
-(
-SELECT Name AS Pais
+
+(SELECT Name AS Pais
 FROM country
+WHERE Population > 100
 ORDER BY Population DESC
-WHERE Population > 100
-LIMIT 10
-)
+LIMIT 10)
+
 UNION
-(
-SELECT Name AS Pais
+
+(SELECT Name AS Pais
 FROM country
-ORDER BY Population
 WHERE Population > 100
+ORDER BY Population
 LIMIT 10);
+
 
 -- 7
 

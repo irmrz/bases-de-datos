@@ -111,7 +111,14 @@ WHERE countrylanguage.Language = 'Spanish';
 
 Preguntas
 
+
 1)
+
+-- Pregunta
+
+¿Devuelven los mismos valores las siguientes consultas? ¿Por qué? 
+
+-- Querys
 
 SELECT city.Name, country.Name
 FROM city
@@ -122,12 +129,22 @@ FROM city
 INNER JOIN country ON city.CountryCode = country.Code
 WHERE country.Name = 'Argentina';
 
+-- Respuesta
+
 Ambas consultas devuelven lo mismo porque semanticamente hacen lo mismo. La unica diferencia
 es que la primera aplica el filtro en el JOIN mientras que la segunda lo hace en el WHERE.
 Dado que INNER JOIN funciona como una interseccion entre dos conjuntos, ambas querys buscan 
 los resultados en el mismo lugar.
 
+
 2)
+
+-- Pregunta
+
+¿Y si en vez de INNER JOIN fuera un LEFT JOIN?
+
+-- Querys
+
 SELECT city.Name, country.Name
 FROM city
 LEFT JOIN country ON city.CountryCode = country.Code AND country.Name = 'Argentina';
@@ -137,8 +154,12 @@ FROM city
 LEFT JOIN country ON city.CountryCode = country.Code
 WHERE country.Name = 'Argentina';
 
+-- Respuesta
+
 Al usar LEFT JOIN, en la primera consulta, se devuelven todos los resultados de la tabla city
-incluyendo aquellos cuyo country.Name es NULL. En la segunda consulta, se devuelven solo los
-resultados de la tabla city que satisfacen la condicion descripta en el WHERE, es decir 
-aquellas ciudades que tienen country.name = Argentina.
+incluyendo aquellos cuyo country.Name es NULL. En realidad no es NULL, sino que al tener un
+country.name distinto de Argentina, el resultado es NULL.
+En la segunda consulta, se devuelven solo los resultados de la tabla city que 
+satisfacen la condicion descripta en el WHERE, es decir  aquellas ciudades que 
+tienen country.name = Argentina.
 */

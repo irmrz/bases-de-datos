@@ -1,0 +1,4 @@
+En el caso de que accidentes sea solo un valor numerico que represente la cantidad de accidentes que tuvo un auto, entonces
+con ser un atributo basta. En caso de que un accidente tenga atributos como fecha del mismo, nivel de daño, costo reparación, etc... 
+debería ser una entidad debil, cuya clave foranea sea la patente del auto. Esto tambien permitiría que esta entidad crezca en un futuro
+y se le puedan agregar más atributos.

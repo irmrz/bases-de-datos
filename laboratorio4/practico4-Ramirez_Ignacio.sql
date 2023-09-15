@@ -58,3 +58,43 @@ WHERE SurfaceArea < 1000
                 FROM city
                 WHERE Population > 100000
                 AND country.Code = city.CountryCode);
+
+-- 6
+
+/*
+Listar el nombre de cada país con la cantidad de habitantes de su ciudad más poblada. 
+(Hint: Hay dos maneras de llegar al mismo resultado. Usando consultas escalares o 
+usando agrupaciones, encontrar ambas).
+*/
+
+-- Consulta Escalar
+SELECT country.Name AS Pais, 
+    (SELECT MAX(Population) 
+     FROM city 
+     WHERE CountryCode = country.Code ) AS Habitantes_ciudad_mas_poblada
+FROM country
+HAVING Habitantes_ciudad_mas_poblada IS NOT NULL;
+
+-- Usando Agrupaciones
+SELECT country.Name AS Pais,
+    MAX(city.Population) AS Habitantes_ciudad_mas_poblada
+FROM country
+INNER JOIN city ON city.CountryCode = country.Code
+GROUP BY country.Code;
+
+-- 7
+
+/*
+Listar aquellos países y sus lenguajes no oficiales cuyo porcentaje de hablantes sea
+ mayor al promedio de hablantes de los lenguajes oficiales.
+*/
+
+SELECT country.Name AS Pais,
+    countrylanguage.Language AS LenguajeNoOficial
+FROM country
+INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
+WHERE countrylanguage.IsOfficial = 'F' 
+    AND countrylanguage.Percentage > (SELECT AVG(Percentage) 
+                                      FROM countrylanguage
+                                      WHERE IsOfficial = 'T'
+                                      AND CountryCode = country.Code);

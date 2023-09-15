@@ -98,3 +98,49 @@ WHERE countrylanguage.IsOfficial = 'F'
                                       FROM countrylanguage
                                       WHERE IsOfficial = 'T'
                                       AND CountryCode = country.Code);
+
+-- 8
+
+/*
+Listar la cantidad de habitantes por continente ordenado en forma descendente
+*/
+
+SELECT Continent, SUM(Population) AS PoblacionContinentes
+FROM country
+GROUP BY (Continent)
+ORDER BY PoblacionContinentes Desc;  
+
+-- 9 
+
+/*
+Listar el promedio de esperanza de vida (LifeExpectancy) por continente 
+con una esperanza de vida entre 40 y 70 años
+*/
+
+SELECT Continent, AVG(LifeExpectancy) AS EsperanzaVida
+FROM country
+GROUP BY (Continent)
+HAVING EsperanzaVida BETWEEN 40 AND 70;
+
+-- 10
+/*
+Listar la cantidad máxima, mínima, promedio y suma de habitantes por continente
+*/
+
+SELECT  Continent,
+     MAX(Population),
+     MIN(Population),
+     AVG(Population),
+     SUM(Population)
+FROM country
+GROUP BY Continent;
+
+
+-- Parte 2
+
+/*
+Si en la consulta 6 se quisiera devolver, además de las columnas ya solicitadas, 
+el nombre de la ciudad más poblada. ¿Podría lograrse con agrupaciones? 
+¿y con una subquery escalar?
+*/
+

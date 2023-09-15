@@ -37,7 +37,11 @@ que superen en porcentaje de hablantes a cada uno de los idiomas oficiales del p
 SELECT country.Name AS Pais, countrylanguage.Language AS 'Idioma no oficial'
 FROM country
 INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
-WHERE countrylanguage.IsOfficial = 'F';
+WHERE countrylanguage.IsOfficial = 'F' 
+    AND countrylanguage.Percentage > 
+        (SELECT MAX(countrylanguage.Percentage)
+         FROM countrylanguage
+         WHERE IsOfficial = 'T' AND countrylanguage.CountryCode = country.Code);
 
 -- 5
 
@@ -46,3 +50,11 @@ Listar (sin duplicados) aquellas regiones que tengan países con una superficie 
 a 1000 km2 y exista (en el país) al menos una ciudad con más de 100000 habitantes. 
 (Hint: Esto puede resolverse con o sin una subquery, intenten encontrar ambas respuestas)
 */
+
+SELECT Region 
+FROM country
+WHERE SurfaceArea < 1000
+    AND EXISTS (SELECT *
+                FROM city
+                WHERE Population > 100000
+                AND country.Code = city.CountryCode);

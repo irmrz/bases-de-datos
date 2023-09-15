@@ -139,8 +139,16 @@ GROUP BY Continent;
 -- Parte 2
 
 /*
+Listar el nombre de cada país con la cantidad de habitantes de su ciudad más poblada. 
+(Hint: Hay dos maneras de llegar al mismo resultado. Usando consultas escalares o
+usando agrupaciones, encontrar ambas).
+
 Si en la consulta 6 se quisiera devolver, además de las columnas ya solicitadas, 
 el nombre de la ciudad más poblada. ¿Podría lograrse con agrupaciones? 
 ¿y con una subquery escalar?
 */
 
+SELECT country.Name, 
+    (SELECT MAX(Population) FROM city WHERE city.CountryCode = country.Code) AS Poblacion,
+    (SELECT Name FROM city WHERE city.CountryCode = country.Code AND Poblacion = city.Population) AS Ciudad
+FROM country;

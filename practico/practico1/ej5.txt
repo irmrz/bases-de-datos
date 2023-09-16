@@ -1,0 +1,6 @@
+No es razonable suponer que un doctor siempre es acompañado por los 
+mismos enfermeros. Estos pueden cambiar por cualquier situacion que 
+ocurra en la vida cotidiada, por ej: deja de trabajar en el hospital, ese
+dia tenia franco, ya se habia ido, etc.
+Es por esto que Enfermer@ debería ser una entidad aparte conectado a un 
+doctor mediante la relación AsisteA.

@@ -140,3 +140,86 @@ rentada (Hint: revisar que el rental no tiene información
 directa sobre la tienda, sino sobre el cliente, que está 
 asociado a una tienda en particular).
 */
+
+CREATE TRIGGER update_stock 
+AFTER INSERT ON rental
+FOR EACH ROW 
+    UPDATE inventory 
+    SET stock = stock - 1 
+    WHERE stock > 0 
+        AND NEW.inventory_id = inventory.inventory_id;
+
+
+-- 11
+
+/*
+Cree una tabla `fines` que tenga dos campos: `rental_id` 
+y `amount`. El primero es una clave foránea a la tabla 
+rental y el segundo es un valor numérico con dos decimales
+*/
+
+CREATE TABLE fines (
+    fine_id INT AUTO_INCREMENT,
+    rental_id INT NOT NULL,
+    amount DECIMAL(5,2),
+    PRIMARY KEY(fine_id),
+    FOREIGN KEY (rental_id) REFERENCES rental(rental_id)
+);
+
+
+-- 12
+
+/*
+Cree un procedimiento `check_date_and_fine` que revise 
+la tabla `rental` y cree un registro en la tabla `fines` 
+por cada `rental` cuya devolución (return_date) haya 
+tardado más de 3 días (comparación con rental_date). 
+El valor de la multa será el número de días de retraso 
+multiplicado por 1.5
+*/
+DELIMITER //
+CREATE PROCEDURE check_date_and_fine()
+BEGIN
+    INSERT INTO fines (rental_id, amount)
+    SELECT rental_id, TIMESTAMPDIFF(DAY, rental_date, return_date) * 1.5 AS fine_amount
+    FROM rental
+    WHERE TIMESTAMPDIFF(DAY, rental_date, return_date) > 3;
+END //
+DELIMITER ;
+
+
+-- 13
+
+/*
+Crear un rol `employee` que tenga acceso de inserción, 
+eliminación y actualización a la tabla `rental`.
+*/
+
+CREATE ROLE employee;
+GRANT INSERT, UPDATE, DELETE ON sakila.rental TO employee;
+
+
+-- 14
+
+/*
+Revocar el acceso de eliminación a `employee` y 
+crear un rol `administrator` que tenga todos los 
+privilegios sobre la BD `sakila`.
+*/
+
+REVOKE DELETE ON sakila.rental FROM employee;
+CREATE ROLE administrator;
+GRANT ALL PRIVILEGES ON sakila TO administrator;
+
+
+-- 15
+
+/*
+Crear dos roles de empleado. A uno asignarle 
+los permisos de `employee` y al otro de `administrator`.
+*/
+CREATE ROLE empleado1;
+GRANT employee TO empleado1;
+
+CREATE ROLE empleado2;
+GRANT administrator TO empleado2;

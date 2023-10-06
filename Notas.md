@@ -1,7 +1,6 @@
 ## Funciones de Agregacion:
 - Ej: count, min, max
-- Siempre que haya una funcion de agregación en el select junto con una columna normal hay que usar el GROUP BY
-para "agregar" a esa columna normal el resultado de la funcion.
+- Siempre que haya una funcion de agregación en el select junto con una columna normal hay que usar el GROUP BY para "agregar" a esa columna normal el resultado de la funcion.
 
 ## NEW
 - En el contexto de un trigger en MySQL, NEW es un alias que se utiliza para referirse a la fila recién insertada en la tabla que activó el trigger. En este caso, el trigger está configurado para ejecutarse después de una inserción en la tabla order_items, por lo que NEW.quantity representa la cantidad recién insertada en la columna quantity de la tabla order_items en la fila que desencadenó el trigger.

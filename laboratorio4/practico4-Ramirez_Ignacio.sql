@@ -51,6 +51,7 @@ a 1000 km2 y exista (en el país) al menos una ciudad con más de 100000 habitan
 (Hint: Esto puede resolverse con o sin una subquery, intenten encontrar ambas respuestas)
 */
 
+-- con subquery
 SELECT Region 
 FROM country
 WHERE SurfaceArea < 1000
@@ -58,6 +59,12 @@ WHERE SurfaceArea < 1000
                 FROM city
                 WHERE Population > 100000
                 AND country.Code = city.CountryCode);
+
+-- sin subquery
+SELECT country.Region
+FROM country
+INNER JOIN city ON country.Code = city.CountryCode
+WHERE country.SurfaceArea < 1000 AND city.Population > 100000;
 
 -- 6
 

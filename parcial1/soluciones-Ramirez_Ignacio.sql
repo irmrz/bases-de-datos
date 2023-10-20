@@ -14,12 +14,15 @@ Michael Fred Phelps II, luego de la actualización debería
 tener como valor de `total_medals` igual a 28.
 */
 
-INSERT INTO person (total_medals)
-SELECT person.full_name, person_id,  COUNT(medal_id) AS cantidad_medallas
-FROM competitor_event
-INNER JOIN games_competitor ON (competitor_event.competitor_id = games_competitor.person_id)
-INNER JOIN person ON (games_competitor.person_id = person.id)
-GROUP BY person_id;
+UPDATE person, (
+    SELECT person.`id` AS Persona, COUNT(medal_id) AS medallas
+    FROM competitor_event
+    JOIN games_competitor ON (competitor_event.competitor_id = games_competitor.person_id)
+    JOIN person ON (games_competitor.person_id = person.`id`)
+    GROUP BY person.`id`
+) AS MedallasPorPersona
+SET total_medals = MedallasPorPersona.Medallas
+WHERE person.`id` = MedallasPorPersona.Persona;
 
 -- 3
 /*
@@ -38,6 +41,16 @@ INNER JOIN medal ON (competitor_event.medal_id = medal.`id`)
 INNER JOIN person_region ON (person.`id` = person_region.person_id)
 INNER JOIN noc_region ON (noc_region.`id` = person_region.region_id)
 WHERE noc_region.noc = 'ARG' 
+GROUP BY full_name, medal_name
+HAVING medal_name <> 'NA'
+ORDER BY full_name;
+
+SELECT full_name, medal_name, COUNT(competitor_event.medal_id)
+FROM person
+INNER JOIN competitor_event ON (person.`id` = competitor_event.competitor_id)
+INNER JOIN medal ON (competitor_event.medal_id = medal.`id`)
+INNER JOIN person_region ON (person.`id` = person_region.person_id)
+WHERE person_region.region_id = 9
 GROUP BY full_name, medal_name
 HAVING medal_name <> 'NA'
 ORDER BY full_name;
@@ -135,13 +148,59 @@ Crear dos triggers:
 Un trigger llamado `increase_number_of_medals` que incrementará 
 en 1 el valor del  campo `total_medals` de la tabla `person`.
 
-Un trigger llamado `decrease_number_of_medals` que decrementará 
-en 1 el valor del campo `totals_medals` de la tabla `person`.
-
 El primer trigger se ejecutará luego de un `INSERT` en la tabla `competitor_event` 
 y deberá actualizar el valor en la tabla `person` de acuerdo al valor introducido 
 (i.e. sólo aumentará en 1 el valor de `total_medals` para la persona que ganó una medalla). 
+*/
+
+CREATE TRIGGER increase_number_of_medals 
+AFTER INSERT ON competitor_event
+FOR EACH ROW
+UPDATE person
+SET total_medals = total_medals + 1
+WHERE `id` = NEW.competitor_id;
+
+/*
+Un trigger llamado `decrease_number_of_medals` que decrementará 
+en 1 el valor del campo `totals_medals` de la tabla `person`.
 
 Análogamente, el segundo trigger se ejecutará luego de un `DELETE` en la tabla `competitor_event`
-y sólo actualizará el valor en la persona correspondiente.
+y sólo actualizará el valor en la persona correspondiente. */
+
+CREATE TRIGGER decrease_number_of_medals
+AFTER DELETE ON competitor_event
+FOR EACH ROW
+UPDATE person
+SET total_medals = total_medals - 1
+WHERE `id` = OLD.competitor_id AND total_medals > 0;
+
+
+-- 8
+/*
+Crear un procedimiento  `add_new_medalists` que tomará un `event_id`, 
+y tres ids de atletas `g_id`, `s_id`, y `b_id` donde se deberá insertar 
+tres registros en la tabla `competitor_event`  asignando a `g_id` la 
+medalla de oro, a `s_id` la medalla de plata, y a `b_id` la medalla de bronce
 */
+DELIMITER //
+CREATE PROCEDURE add_new_medalists (IN event_id INT, 
+                                    IN g_id INT,
+                                    IN s_id INT,
+                                    IN b_id INT)
+BEGIN
+    INSERT INTO competitor_event VALUES (event_id, g_id, 1);
+    INSERT INTO competitor_event VALUES (event_id, s_id, 2);
+    INSERT INTO competitor_event VALUES (event_id, b_id, 3);
+END //
+DELIMITER ;
+
+
+-- 9
+/*
+Crear el rol `organizer` y asignarle permisos de eliminación 
+sobre la tabla `games` y permiso de actualización sobre la 
+columna `games_name`  de la tabla `games` .
+*/
+CREATE ROLE organizer;
+GRANT DELETE ON olympics.games TO organizer;
+GRANT UPDATE (games_name) ON olympics.games TO organizer;

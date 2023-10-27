@@ -1,3 +1,5 @@
+/*  Parte 1  */
+
 /*  Ejercicio 1
 Insertar 5 nuevos usuarios en la colección users. 
 Para cada nuevo usuario creado, insertar al menos 
@@ -135,3 +137,46 @@ consulta debe poder insertar un nuevo usuario en caso que
 el usuario no exista. Ejecute la consulta dos veces. 
 ¿Qué operación se realiza en cada caso?  (Hint: usar upserts).
 */
+
+db.users.updateOne(
+    {email: {$eq: "joel.macdonel@fakegmail.com"}},
+    {$set: {password: "some password"}},
+    {upsert: true}
+)
+
+/*
+{
+  acknowledged: true,
+  insertedId: ObjectId("653c3f0d33cbd007e3a03d55"),
+  matchedCount: 0,
+  modifiedCount: 0,
+  upsertedCount: 1
+}
+mflix> db.users.updateOne( { email: { $eq: "joel.macdonel@fakegmail.com" } }, { $set: { password: "some password" } }, { upsert: true } )
+{
+  acknowledged: true,
+  insertedId: null,
+  matchedCount: 1,
+  modifiedCount: 0,
+  upsertedCount: 0
+}
+*/
+
+
+/* Ejercicio 9
+Remover todos los comentarios realizados por el usuario cuyo 
+email es victor_patel@fakegmail.com durante el año 1980.
+*/
+
+db.comments.deleteMany(
+    {$and: [
+        {email: "victor_patel@fakegmail.com"},
+        {date: {
+            $gte: ISODate("1980-01-01T00:00:00Z"),
+            $lt: ISODate("1981-01-01T00:00:00Z")
+        }
+}
+    ]}
+)
+
+// DeletedCount: 21

@@ -180,3 +180,50 @@ db.comments.deleteMany(
 )
 
 // DeletedCount: 21
+
+
+/*  Parte 2  */
+
+/* Ejercicio 10
+Listar el id del restaurante (restaurant_id) y las calificaciones 
+de los restaurantes donde al menos una de sus calificaciones haya 
+sido realizada entre 2014 y 2015 inclusive, y que tenga una 
+puntuación (score) mayor a 70 y menor o igual a 90.
+*/
+
+db.restaurants.find(
+    {$and: [
+        {"grades.date": {$gte: ISODate("2014-01-01")}},
+        {"grades.date": {$lt: ISODate("2016-01-01")}},
+        {"grades.score": {$gt: 70}},
+        {"grades.score": {$lte: 90}}
+    ]},
+    {restaurant_id: 1, "grades.score": 1}
+)
+
+
+/* Ejercicio 11
+Agregar dos nuevas calificaciones al restaurante cuyo id es "50018608". 
+*/
+
+db.restaurants.updateOne(
+    {restaurant_id: "50018608"},
+    {
+        $addToSet: 
+        {
+            grades: 
+            [
+            {
+                "date" : ISODate("2019-10-10T00:00:00Z"),
+                "grade" : "A",
+                "score" : 18
+            },
+            {
+                "date" : ISODate("2020-02-25T00:00:00Z"),
+                "grade" : "A",
+                "score" : 21
+            }
+            ]
+        }
+    }
+)

@@ -18,4 +18,85 @@ SELECT Name
 FROM city
 WHERE Population > (SELECT AVG(Population) FROM city);
 
--- 2 
+-- 3
+/* Listar todas aquellas ciudades no asiáticas cuya población 
+sea igual o mayor a la población total de algún país de Asia. 
+*/
+
+SELECT city.Name
+FROM city
+INNER JOIN country ON city.CountryCode = country.Code
+WHERE country.Continent NOT LIKE 'Asia'
+    AND city.Population >= (SELECT MIN(Population)
+                            FROM country
+                            WHERE Continent = 'Asia');
+
+-- 4
+/* Listar aquellos países junto a sus idiomas no oficiales, 
+que superen en porcentaje de hablantes a cada uno de los 
+idiomas oficiales del país. */
+
+SELECT country.Name, Language
+FROM country
+INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
+WHERE IsOfficial = 'F' AND
+    Percentage > (SELECT MAX(Percentage)
+                  FROM countrylanguage
+                  WHERE IsOfficial = 'T' AND 
+                  country.Code = countrylanguage.CountryCode);
+
+-- 5
+/* Listar (sin duplicados) aquellas regiones que tengan países con 
+una superficie menor a 1000 km2 y exista (en el país) al menos una 
+ciudad con más de 100000 habitantes. (Hint: Esto puede resolverse 
+con o sin una subquery, intenten encontrar ambas respuestas).*/
+
+-- Con subquery
+
+SELECT Region
+FROM country
+WHERE SurfaceArea < 1000 AND
+    EXISTS (
+        SELECT Population
+        FROM city
+        WHERE Population > 100000 AND
+            city.CountryCode = country.Code
+    );
+
+-- 6 
+/* Listar el nombre de cada país con la cantidad de habitantes de 
+su ciudad más poblada. (Hint: Hay dos maneras de llegar al mismo 
+resultado. Usando consultas escalares o usando agrupaciones, 
+encontrar ambas). */
+
+SELECT country.Name,
+    (
+        SELECT MAX(city.Population)
+        FROM city
+        WHERE country.Code = city.CountryCode
+    )
+FROM country;
+
+-- 7 
+/* Listar aquellos países y sus lenguajes no oficiales cuyo 
+porcentaje de hablantes sea mayor al promedio de hablantes de 
+los lenguajes oficiales. */
+
+-- 8
+/* Listar la cantidad de habitantes por continente ordenado 
+en forma descendente. */
+
+-- 9
+/* Listar el promedio de esperanza de vida (LifeExpectancy) 
+por continente con una esperanza de vida entre 40 y 70 años. */
+
+-- 10
+/* Listar la cantidad máxima, mínima, promedio y suma de 
+habitantes por continente. */
+
+-- Parte 2
+
+/* -- 1
+Si en la consulta 6 se quisiera devolver, además de las columnas 
+ya solicitadas, el nombre de la ciudad más poblada. ¿Podría 
+lograrse con agrupaciones? ¿y con una subquery escalar? */

@@ -1,131 +1,135 @@
--- Parte 1
+-- Parte 1 --
+
+
+-- 2
+
+CREATE TABLE country (
+  Code VARCHAR(3) NOT NULL,
+  Name VARCHAR(250) NOT NULL,
+  continent VARCHAR(250) NOT NULL,
+  Region VARCHAR(250) NOT NULL,
+  SurfaceArea INT,
+  IndepYear INT,
+  Population INT,
+  LifeExpectancty INT,
+  GNP INT,
+  GNPOld INT,
+  LocalName VARCHAR(250),
+  GovernmentForm VARCHAR(250),
+  HeadOfState VARCHAR(250),
+  Capital INT,
+  Code2 VARCHAR(2),
+  PRIMARY KEY (Code)
+);
+
+CREATE TABLE city (
+  ID INT NOT NULL,
+  Name VARCHAR(250) NOT NULL,
+  CountryCode VARCHAR(3) NOT NULL,
+  District VARCHAR(250),
+  Population INT,
+  PRIMARY KEY (ID),
+  FOREIGN KEY (CountryCode) REFERENCES country(Code)
+);
+
+CREATE TABLE countrylanguage (
+  CountryCode VARCHAR(3) NOT NULL,
+  Language VARCHAR(250) NOT NULL,
+  IsOfficial CHAR,
+  Percentage DECIMAL(4,1),
+  PRIMARY KEY (Language, CountryCode),
+  FOREIGN KEY (CountryCode) REFERENCES country(Code)
+);
+
+-- 4
+
+CREATE Table continent (
+  Name VARCHAR(250) NOT NULL,
+  Area INT NOT NULL,
+  MassPercentage DECIMAL(3,1),
+  MostPopulatedCity VARCHAR(250),
+  PRIMARY KEY(Name)
+);
+
+
+-- 5
+INSERT INTO `continent` VALUES ('AFRICA', 30370000, 20.4, 'Cairo, Egypt');
+INSERT INTO `continent` VALUES ('ANTARCTICA', 14000000, 9.2, 'McMurdo Station');
+INSERT INTO `continent` VALUES ('ASIA', 45579000, 29.5, 'Mumbai, India');
+INSERT INTO `continent` VALUES ('EUROPE', 10180000, 6.8, 'Instanbul, Turquia');
+INSERT INTO `continent` VALUES ('NORTH AMERICA', 24709000, 16.5, 'Ciudad de Mexico, Mexico');
+INSERT INTO `continent` VALUES ('OCEANIA', 8600000, 5.9, 'Sidney, Australia');
+INSERT INTO `continent` VALUES ('SOUTH AMERICA', 1784000, 12.0, 'Sao Paulo, Brazil');
+
+-- 6
+
+ALTER Table country
+ADD FOREIGN KEY (Continent) REFERENCES continent(Name);
+
+
+--- Parte 2
 
 -- 1
 
-SELECT city.Name, country.Name, country.Region, GovernmentForm
-FROM city
-INNER JOIN country ON country.Code = city.CountryCode
-ORDER BY city.Population DESC
-LIMIT 10;
+SELECT Name, Region
+FROM country
+ORDER BY Name DESC;
 
 -- 2
-/* Listar los 10 países con menor población del mundo, 
-junto a sus ciudades capitales (Hint: puede que uno de 
-estos países no tenga ciudad capital asignada, en este 
-caso deberá mostrar "NULL"). */
 
-SELECT country.Name as pais, city.Name as ciudad, country.Population
-FROM country
-LEFT JOIN city ON country.Code = city.CountryCode
-ORDER BY country.Population
+SELECT Name, Population
+FROM city
+ORDER BY Population DESC
 LIMIT 10;
 
 -- 3
-/* Listar el nombre, continente y todos los lenguajes 
-oficiales de cada país. (Hint: habrá más de una fila
-por país si tiene varios idiomas oficiales). */
 
-SELECT country.Name, country.Continent, Language
+SELECT Name, Region, SurfaceArea, GovernmentForm
 FROM country
-INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
-WHERE countrylanguage.IsOfficial = 'T'
-ORDER BY country.Name;
+ORDER BY SurfaceArea ASC
+LIMIT 10;
 
--- 4 
-/* Listar el nombre del país y nombre de capital, de los 20 
-países con mayor superficie del mundo. */
+-- 4
 
-SELECT country.Name, city.Name
+SELECT Name, GovernmentForm
 FROM country
-INNER JOIN city ON country.Capital = city.ID
-ORDER BY country.SurfaceArea DESC
-LIMIT 20;
+WHERE GovernmentForm LIKE 'Dependent%';
 
 -- 5
-/* Listar las ciudades junto a sus idiomas oficiales 
-(ordenado por la población de la ciudad) y el porcentaje 
-de hablantes del idioma. */
 
-SELECT city.Name, countrylanguage.Language, countrylanguage.Percentage
-FROM city
-INNER JOIN countrylanguage ON city.CountryCode = countrylanguage.CountryCode
-ORDER BY city.Population DESC;
+SELECT Language, Percentage
+FROM countrylanguage
+WHERE IsOfficial = 'T';
 
 -- 6
-/* Listar los 10 países con mayor población y los 10 
-países con menor población (que tengan al menos 100 habitantes) 
-en la misma consulta. */
 
-( 
-    SELECT Name, Population 
-    FROM country
-    ORDER BY Population DESC
-    LIMIT 10
-)
-UNION
-(
-    SELECT Name, Population 
-    FROM country
-    ORDER BY Population ASC
-    LIMIT 10
-);
+UPDATE countrylanguage
+SET Percentage = 100.0
+WHERE CountryCode = 'AIA';
 
 -- 7
-/* Listar aquellos países cuyos lenguajes oficiales son 
-el Inglés y el Francés (hint: no debería haber filas duplicadas). */
 
-(   
-    SELECT Name
-    FROM country
-    INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
-    WHERE countrylanguage.Language = 'French' 
-    AND countrylanguage.IsOfficial = 'T'
-)
-INTERSECT
-(
-    SELECT Name
-    FROM country
-    INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
-    WHERE countrylanguage.Language = 'English' 
-    AND countrylanguage.IsOfficial = 'T'
-);
+SELECT Name
+FROM city
+WHERE District = 'Córdoba' AND CountryCode = 'ARG';
 
 -- 8
-/* Listar aquellos países que tengan hablantes del Inglés 
-pero no del Español en su población. */
 
-(
-    SELECT Name
-    FROM country
-    INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
-    WHERE countrylanguage.Language = 'English' 
-)
-EXCEPT
-(
-    SELECT Name
-    FROM country
-    INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
-    WHERE countrylanguage.Language = 'Spanish'
-);
+SELECT Name
+FROM city
+WHERE District = 'Córdoba' AND CountryCode NOT LIKE 'ARG';
 
+-- 9
 
--- Parte 2: Preguntas
-/*
--- 1
+SELECT Name, HeadOfState
+FROM country
+WHERE HeadOfState LIKE '%John%';
 
-Ambas consultas deberían devolver lo mismo. En la primera se agrega
-la condición del nombre del país a la reunión mientras que en la segunda
-se hace la reunión natural típica y luego se le hace una selección de 
-las tuplas donde country.Name = 'Argentina'.
+-- 10
 
--- 2
+SELECT Name, Population
+FROM country
+WHERE Population BETWEEN 35000000 AND 45000000
+ORDER BY Population DESC;
 
-En caso de usar LEFT JOIN, en la primera consulta, todas las tuplas 
-de city que no cumplan la condición del join van a tener valor nulo 
-en country.Name. Es decir, se van a traer todas las tuplas de la
-tabla, a las que no cumplan la condición le ponemos null.
-Para la segunda consulta pasa lo mismo, el cambio es que al tener 
-el WHERE estamos selececcionando solo las tuplas que cumplan la condición
-Primero se traen todas las de city y despues quedan solo las que
-son de argentina.
-*/
+-- 11 ??? 

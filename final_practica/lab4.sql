@@ -82,17 +82,43 @@ FROM country;
 porcentaje de hablantes sea mayor al promedio de hablantes de 
 los lenguajes oficiales. */
 
+SELECT country.Name, Language
+FROM country
+INNER JOIN countrylanguage ON country.Code = countrylanguage.CountryCode
+WHERE IsOfficial = 'F' 
+    AND countrylanguage.Percentage > (
+    SELECT AVG(Percentage)
+    FROM countrylanguage
+    WHERE country.Code = countrylanguage.CountryCode 
+        AND IsOfficial = 'T'
+);
+
 -- 8
 /* Listar la cantidad de habitantes por continente ordenado 
 en forma descendente. */
+
+SELECT continent, SUM(Population) as Poblacion
+FROM country
+GROUP BY continent
+ORDER BY Poblacion DESC;
+
 
 -- 9
 /* Listar el promedio de esperanza de vida (LifeExpectancy) 
 por continente con una esperanza de vida entre 40 y 70 años. */
 
+SELECT AVG(LifeExpectancty) as EsperanzaVida, continent
+FROM country
+GROUP BY continent
+HAVING EsperanzaVida BETWEEN 40 AND 70;
+
 -- 10
 /* Listar la cantidad máxima, mínima, promedio y suma de 
 habitantes por continente. */
+
+SELECT MAX(Population), MIN(Population), AVG(Population), SUM(Population), continent
+FROM country
+GROUP BY continent;
 
 -- Parte 2
 
@@ -100,3 +126,18 @@ habitantes por continente. */
 Si en la consulta 6 se quisiera devolver, además de las columnas 
 ya solicitadas, el nombre de la ciudad más poblada. ¿Podría 
 lograrse con agrupaciones? ¿y con una subquery escalar? */
+
+SELECT country.Name,
+    (
+        SELECT MAX(city.Population)
+        FROM city
+        WHERE country.Code = city.CountryCode
+    ) AS maxpop,
+    (
+        SELECT city.Name
+        FROM city
+        WHERE country.Code = city.CountryCode
+            AND city.Population = maxpop
+        LIMIT 1
+    ) as Ciudad
+FROM country;

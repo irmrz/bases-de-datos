@@ -1,6 +1,6 @@
 /* Parte 1 */
 
-use(mflix);
+use('mflix');
 
 // 1
 
@@ -254,3 +254,56 @@ db.comments.deleteMany(
     }
 )
 // { acknowledged: true, deletedCount: 21 }
+
+/* Parte 2 */
+
+use('restaurantdb');
+
+// 10
+/* 
+    Lo que hace elem match es encontrar un elemento que satisfaga las condiciones 
+*/
+db.restaurants.find(
+    {
+        'grades': {
+            $elemMatch: {
+                $and: [
+                    {'score': {$gt: 70}},
+                    {'score': {$lte: 90}},
+                    {'date': {$gte: ISODate('2014-01-01')}},
+                    {'date': {$lte: ISODate('2015-12-31')}}
+                ]
+            }
+        }
+    },
+    {
+        'restaurant_id': 1,
+        'grades': 1
+    }
+)
+
+// 11
+
+db.restaurants.updateMany(
+    {
+        'restaurant_id': '50018608'
+    },
+    {
+       $addToSet: {
+        'grades': {
+            $each: [
+                {
+                    "date" : ISODate("2019-10-10T00:00:00Z"),
+                    "grade" : "A",
+                    "score" : 18
+                },
+                {
+                    "date" : ISODate("2020-02-25T00:00:00Z"),
+                    "grade" : "A",
+                    "score" : 21
+                } 
+            ]           
+        }
+       } 
+    }
+)

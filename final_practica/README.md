@@ -40,3 +40,4 @@ Hay que usar sub-querys para extraer el resultado de la primera función y despu
 
 - Pregunta 11 lab 2
 - 6 lab 6
+- 11 lab 8

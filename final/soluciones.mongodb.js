@@ -64,12 +64,22 @@ db.movies.aggregate([
         }
     },
     {
+        $unwind: '$comentarios'
+    },
+    {
+        $addFields: {
+          'nombre': '$comentarios.name',
+          'email': '$comentarios.email',
+          'texto': '$comentarios.text'
+        }
+    },
+    {
         $project: {
-          'comentarios.name': 1,
-          'comentarios.email': 1,
-          'comentarios.text': 1,
-          'title': 1,
-          'genres': 1,
+          '_nombre': "$nombre",
+          '_email': "$email",
+          '_texto': "$texto",
+          '_pelicula': "$title",
+          '_generos': "$genres",
           '_id': 0
         }
     }
@@ -111,19 +121,21 @@ db.runCommand({
                     bsonType: 'string' // Es una fecha formateada como string
                 },
                 'countries': {
-                    bsonType: 'object',
+                    bsonType: 'array',
                     items: {
                         bsonType: 'string'
                     }
                 },
                 'directors': {
-                    bsonType: 'object',
+                    bsonType: 'array',
                     items: {
                         bsonType: 'string'
                     }
                 },
                 'genres' : {
-                    enum: ['Animation',  'Biography',   'Comedy',
+                    bsonType: 'array',
+                    items: {
+                        enum: ['Animation',  'Biography',   'Comedy',
                     'Crime',      'Documentary', 'Drama',
                     'Family',     'Fantasy',     'Film-Noir',
                     'History',    'Horror',      'Music',
@@ -131,6 +143,7 @@ db.runCommand({
                     'Reality-TV', 'Romance',     'Sci-Fi',
                     'Short',      'Sport',       'Talk-Show',
                     'Thriller',   'War',         'Western', 'Action', 'Adventure']
+                    }
                 },
                 'runtime': {
                     bsonType: 'int'
@@ -146,3 +159,13 @@ db.movies.distinct('genres')
 
 /* Ejemplos de insercion que cumple las reglas */
 
+db.movies.insertOne({
+    title: 'El Padrino',
+    year: 1972,
+    imdb: {rating: 9.2, votes: 932000, id: 72},
+    lastupdated: '2015-08-26 00:03:45.040000000',
+    countries: ['USA', 'ITALY'],
+    directors: ['Francis Ford Coppola'],
+    genres: ['Drama'],
+    runtime: 175
+})

@@ -25,7 +25,7 @@ db.movies.aggregate([
     },
     {
         $match: {
-          'peliculas.2': {'$exists': true}
+          'peliculas.3': {'$exists': true}
         }
     },
     {
@@ -38,10 +38,10 @@ db.movies.aggregate([
     },
     {
         $project: {
-          'nombre_director': '$_id',
-          'rating_promedio': 1,
-          'cantidad_peliculas': 1,
-          'peliculas': 1,
+          '_nombre_director': '$_id',
+          '_rating_promedio': '$rating_promedio',
+          '_cantidad_peliculas': '$cantidad_peliculas',
+          '_peliculas': '$peliculas',
           '_id': 0
         }
     }
@@ -118,7 +118,7 @@ db.runCommand({
                     }
                 },
                 'lastupdated': {
-                    bsonType: 'string' // Es una fecha formateada como string
+                    bsonType: 'date' // Es una fecha formateada como string
                 },
                 'countries': {
                     bsonType: 'array',
@@ -163,7 +163,7 @@ db.movies.insertOne({
     title: 'El Padrino',
     year: 1972,
     imdb: {rating: 9.2, votes: 932000, id: 72},
-    lastupdated: '2015-08-26 00:03:45.040000000',
+    lastupdated: new Date(),
     countries: ['USA', 'ITALY'],
     directors: ['Francis Ford Coppola'],
     genres: ['Drama'],

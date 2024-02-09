@@ -107,30 +107,36 @@ db.runCommand({
                     required: ['rating', 'votes', 'id'],
                     properties: {
                         'rating': {
-                            bsonType: 'double'
+                            bsonType: 'double',
+                            description: 'Rating must be a DOUBLE'
                         },
                         'votes': {
-                            bsonType: 'int'
+                            bsonType: 'int',
+                            description: 'The number of votes must be an integer'
                         },
                         'id': {
-                            bsonType: 'int'
+                            bsonType: 'int',
+                            description: 'The id from imdb must be an integer'
                         }
                     }
                 },
                 'lastupdated': {
-                    bsonType: 'date' // Es una fecha formateada como string
+                    bsonType: 'date', // Es una fecha formateada como string
+                    description: 'It must be a Date'
                 },
                 'countries': {
                     bsonType: 'array',
                     items: {
                         bsonType: 'string'
-                    }
+                    },
+                    description: 'It must be an array of strings'
                 },
                 'directors': {
                     bsonType: 'array',
                     items: {
                         bsonType: 'string'
-                    }
+                    },
+                    description: 'It must be an array of strings'
                 },
                 'genres' : {
                     bsonType: 'array',
@@ -143,17 +149,19 @@ db.runCommand({
                     'Reality-TV', 'Romance',     'Sci-Fi',
                     'Short',      'Sport',       'Talk-Show',
                     'Thriller',   'War',         'Western', 'Action', 'Adventure']
-                    }
+                    },
+                    description: 'The genre must be one of the listed strings'
                 },
                 'runtime': {
-                    bsonType: 'int'
+                    bsonType: 'int',
+                    description: 'The runtime in minutes must be an integer'
                 }
             }
         }
     }
 })
 
-/* Buscar generos de las peliculas */ 
+/* Query para buscar generos de las peliculas */ 
 
 db.movies.distinct('genres')
 

@@ -1,3 +1,5 @@
+/* Ignacio Tomas Ramirez - DNI: 44432780 */
+
 /* 1 */
 
 CREATE VIEW informacion_empleado AS 

@@ -1,3 +1,5 @@
+/* Ignacio Tomas Ramirez - DNI: 44432780 */
+
 /* 1 */
 
 db.movies.aggregate([
@@ -129,6 +131,7 @@ db.runCommand({
                     items: {
                         bsonType: 'string'
                     },
+                    minItems: 1,
                     description: 'It must be an array of strings'
                 },
                 'directors': {
@@ -136,10 +139,12 @@ db.runCommand({
                     items: {
                         bsonType: 'string'
                     },
+                    minItems: 1,
                     description: 'It must be an array of strings'
                 },
                 'genres' : {
                     bsonType: 'array',
+                    minItems: 1,
                     items: {
                         enum: ['Animation',  'Biography',   'Comedy',
                     'Crime',      'Documentary', 'Drama',
